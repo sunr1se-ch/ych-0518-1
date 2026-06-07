@@ -1,5 +1,6 @@
 from datetime import date
 from flask import Blueprint, request, jsonify, send_file
+from sqlalchemy import func
 from dateutil import parser as date_parser
 import io
 
@@ -71,8 +72,8 @@ def get_aspects():
 def get_date_range():
     db = next(get_db())
     result = db.query(
-        db.func.min(Sample.sample_date),
-        db.func.max(Sample.sample_date)
+        func.min(Sample.sample_date),
+        func.max(Sample.sample_date)
     ).first()
     
     min_date = result[0].isoformat() if result[0] else None
