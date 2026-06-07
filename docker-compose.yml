@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: permafrost-backend
+    restart: unless-stopped
+    environment:
+      - FLASK_ENV=production
+      - DATABASE_URL=sqlite:////app/data/permafrost.db
+    volumes:
+      - ./backend/data:/app/data
+    networks:
+      - permafrost-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: permafrost-frontend
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - permafrost-network
+
+networks:
+  permafrost-network:
+    driver: bridge
+
+volumes:
+  backend-data:
